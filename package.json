@@ -1,13 +1,46 @@
 {
   "name": "electron-global-state-sync",
   "version": "0.1.0",
-  "description": "Typed, main-process-owned state synchronization for Electron renderers and React.",
+  "description": "Type-safe global state synchronized across Electron main and renderer processes, with React hooks.",
   "type": "module",
-  "main": "dist/demo/main.cjs",
+  "main": "./dist/main.cjs",
+  "module": "./dist/main.mjs",
+  "types": "./dist/main.d.ts",
   "files": [
-    "dist"
+    "dist/*.cjs",
+    "dist/*.mjs",
+    "dist/*.d.cts",
+    "dist/*.d.ts"
+  ],
+  "license": "MIT",
+  "author": "Fernando Acevedo",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fernando-ace/electron-global-state-sync.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fernando-ace/electron-global-state-sync/issues"
+  },
+  "homepage": "https://github.com/fernando-ace/electron-global-state-sync#readme",
+  "keywords": [
+    "electron",
+    "react",
+    "typescript",
+    "state-management",
+    "ipc",
+    "contextbridge"
   ],
   "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/main.d.ts",
+        "default": "./dist/main.mjs"
+      },
+      "require": {
+        "types": "./dist/main.d.cts",
+        "default": "./dist/main.cjs"
+      }
+    },
     "./main": {
       "import": {
         "types": "./dist/main.d.ts",
@@ -59,6 +92,7 @@
       }
     }
   },
+  "sideEffects": false,
   "scripts": {
     "build": "npm run typecheck && npm run build:lib && npm run build:demo",
     "build:lib": "tsup",
