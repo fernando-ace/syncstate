@@ -16,12 +16,12 @@
   "author": "Fernando Acevedo",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fernando-ace/electron-global-state-sync.git"
+    "url": "git+https://github.com/fernando-ace/syncstate.git"
   },
   "bugs": {
-    "url": "https://github.com/fernando-ace/electron-global-state-sync/issues"
+    "url": "https://github.com/fernando-ace/syncstate/issues"
   },
-  "homepage": "https://github.com/fernando-ace/electron-global-state-sync#readme",
+  "homepage": "https://github.com/fernando-ace/syncstate#readme",
   "keywords": [
     "electron",
     "react",
