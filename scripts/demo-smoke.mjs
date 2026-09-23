@@ -23,6 +23,11 @@ const capture = (chunk) => {
 };
 child.stdout.on("data", capture);
 child.stderr.on("data", capture);
+child.on("error", (error) => {
+  clearTimeout(timeout);
+  console.error(`Unable to start Electron: ${error.message}`);
+  process.exitCode = 1;
+});
 
 const timeout = setTimeout(() => {
   child.kill();

@@ -2,36 +2,61 @@
   "name": "electron-global-state-sync",
   "version": "0.1.0",
   "description": "Typed, main-process-owned state synchronization for Electron renderers and React.",
-  "private": true,
+  "type": "module",
   "main": "dist/demo/main.cjs",
   "files": [
     "dist"
   ],
   "exports": {
     "./main": {
-      "types": "./dist/main.d.ts",
-      "import": "./dist/main.mjs",
-      "require": "./dist/main.cjs"
+      "import": {
+        "types": "./dist/main.d.ts",
+        "default": "./dist/main.mjs"
+      },
+      "require": {
+        "types": "./dist/main.d.cts",
+        "default": "./dist/main.cjs"
+      }
     },
     "./preload": {
-      "types": "./dist/preload.d.ts",
-      "import": "./dist/preload.mjs",
-      "require": "./dist/preload.cjs"
+      "import": {
+        "types": "./dist/preload.d.ts",
+        "default": "./dist/preload.mjs"
+      },
+      "require": {
+        "types": "./dist/preload.d.cts",
+        "default": "./dist/preload.cjs"
+      }
     },
     "./renderer": {
-      "types": "./dist/renderer.d.ts",
-      "import": "./dist/renderer.mjs",
-      "require": "./dist/renderer.cjs"
+      "import": {
+        "types": "./dist/renderer.d.ts",
+        "default": "./dist/renderer.mjs"
+      },
+      "require": {
+        "types": "./dist/renderer.d.cts",
+        "default": "./dist/renderer.cjs"
+      }
     },
     "./react": {
-      "types": "./dist/react.d.ts",
-      "import": "./dist/react.mjs",
-      "require": "./dist/react.cjs"
+      "import": {
+        "types": "./dist/react.d.ts",
+        "default": "./dist/react.mjs"
+      },
+      "require": {
+        "types": "./dist/react.d.cts",
+        "default": "./dist/react.cjs"
+      }
     },
     "./types": {
-      "types": "./dist/types.d.ts",
-      "import": "./dist/types.mjs",
-      "require": "./dist/types.cjs"
+      "import": {
+        "types": "./dist/types.d.ts",
+        "default": "./dist/types.mjs"
+      },
+      "require": {
+        "types": "./dist/types.d.cts",
+        "default": "./dist/types.cjs"
+      }
     }
   },
   "scripts": {
@@ -52,17 +77,20 @@
       "optional": true
     }
   },
+  "overrides": {
+    "esbuild": "^0.28.2"
+  },
   "devDependencies": {
     "@types/node": "^22.15.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
-    "@vitejs/plugin-react": "^4.4.0",
-    "electron": "^37.2.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "electron": "^44.4.4",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "tsup": "^8.5.0",
     "typescript": "^5.8.0",
-    "vite": "^7.0.0",
-    "vitest": "^3.2.0"
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1"
   }
 }
