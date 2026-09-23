@@ -4,37 +4,48 @@ A small TypeScript library for one authoritative Electron state store. The main
 process owns every value; sandboxed renderer windows read, write, and subscribe
 through a narrow `contextBridge` API. A React hook wraps the renderer client.
 
-## Setup
+## Install
 
 ```bash
-npm install
-npm test
-npm run build
-npm run demo
+npm install electron-global-state-sync
 ```
 
-`npm run demo` builds and opens two windows. Change the count or message in
-either window to see the other update immediately. `npm run demo:smoke` builds,
-launches both windows, exercises updates in both directions, and exits.
+## Minimal React example
 
-## Usage
+After exposing a typed bridge from preload, create one renderer client and hook:
 
-Define the shared shape:
+```tsx
+import { createGlobalStateClient } from "electron-global-state-sync/renderer";
+import { createUseGlobalState } from "electron-global-state-sync/react";
+import type { GlobalStateBridge } from "electron-global-state-sync/types";
 
-```ts
-export interface AppState {
+interface AppState {
   count: number;
-  status: "idle" | "working";
 }
 
-export const initialState: AppState = { count: 0, status: "idle" };
+declare global {
+  interface Window {
+    globalState: GlobalStateBridge<AppState>;
+  }
+}
+
+const client = createGlobalStateClient(window.globalState, { count: 0 });
+const useGlobalState = createUseGlobalState(client);
+
+export function Counter() {
+  const [count, setCount] = useGlobalState("count");
+
+  return <button onClick={() => setCount((value) => value + 1)}>{count}</button>;
+}
 ```
 
-Install the canonical store in the main process:
+## Electron wiring
+
+Install the canonical store in the main process with the same shared state type:
 
 ```ts
 import { ipcMain } from "electron";
-import { createGlobalStateMain } from "electron-global-state-sync/main";
+import { createGlobalStateMain } from "electron-global-state-sync";
 import { initialState } from "./shared";
 
 const globalState = createGlobalStateMain(ipcMain, initialState);
@@ -65,30 +76,8 @@ new BrowserWindow({
 });
 ```
 
-Create the client and hook once in renderer code. The initial snapshot prevents
-a loading-only render; the subscribed main-process value replaces it immediately.
-
-```ts
-import { createGlobalStateClient } from "electron-global-state-sync/renderer";
-import { createUseGlobalState } from "electron-global-state-sync/react";
-import type { GlobalStateBridge } from "electron-global-state-sync/types";
-import { initialState, type AppState } from "./shared";
-
-declare global {
-  interface Window {
-    globalState: GlobalStateBridge<AppState>;
-  }
-}
-
-const client = createGlobalStateClient(window.globalState, initialState);
-export const useGlobalState = createUseGlobalState(client);
-```
-
-```tsx
-const [count, setCount] = useGlobalState("count");
-
-return <button onClick={() => setCount((value) => value + 1)}>{count}</button>;
-```
+The renderer's initial snapshot prevents a loading-only render; the subscribed
+main-process value replaces it immediately.
 
 The bridge and client also expose typed `get`, `set`, `subscribe`, and
 `unsubscribe` methods. `client.subscribe()` returns an unsubscribe function.
@@ -119,3 +108,16 @@ overwrite a newer subscription event.
   `set` rather than mutating references returned inside the main process.
 - One IPC handler set is installed per Electron app; call `dispose()` before
   replacing it in tests or during teardown.
+
+## Development
+
+```bash
+npm install
+npm test
+npm run build
+npm run demo
+```
+
+`npm run demo` opens two windows. Change the count or message in either window
+to see the other update immediately. `npm run demo:smoke` performs the same
+bidirectional check automatically and exits.
